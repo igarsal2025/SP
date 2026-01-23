@@ -1,0 +1,125 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+<section class="settings-panel">
+  <div class="panel-header">
+    <h1 class="panel-title">Configuración de Seguridad</h1>
+    <p class="panel-subtitle">Gestiona tu autenticación de dos factores (MFA)</p>
+  </div>
+
+  <div class="mfa-container" id="mfaContainer">
+    <!-- Estado de carga -->
+    <div class="loading-state" id="mfaLoadingState">
+      <div class="spinner"></div>
+      <p>Cargando configuración de seguridad...</p>
+    </div>
+
+    <!-- Estado de MFA -->
+    <div class="mfa-status" id="mfaStatusSection" style="display: none;">
+      <div class="status-card" id="mfaStatusCard">
+        <div class="status-header">
+          <h2>Autenticación de Dos Factores</h2>
+          <span class="status-badge" id="mfaStatusBadge">Deshabilitado</span>
+        </div>
+        <div class="status-content">
+          <p id="mfaStatusDescription">MFA no está configurado. Actívalo para mayor seguridad.</p>
+          <div class="status-actions">
+            <button class="btn btn--primary" id="btnEnableMFA" style="display: none;">
+              Activar MFA
+            </button>
+            <button class="btn btn--danger" id="btnDisableMFA" style="display: none;">
+              Desactivar MFA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuración de MFA -->
+    <div class="mfa-setup" id="mfaSetupSection" style="display: none;">
+      <div class="setup-card">
+        <h2>Configurar Autenticación de Dos Factores</h2>
+        <p class="setup-description">
+          Escanea este código QR con tu app autenticadora (Google Authenticator, Authy, etc.)
+        </p>
+
+        <!-- QR Code -->
+        <div class="qr-container">
+          <img id="mfaQRCode" src="" alt="QR Code para MFA" style="display: none;" />
+          <div class="qr-placeholder" id="qrPlaceholder">
+            <div class="spinner"></div>
+            <p>Generando código QR...</p>
+          </div>
+        </div>
+
+        <!-- Secret Key (alternativa manual) -->
+        <div class="secret-container">
+          <label class="field">
+            <span>Clave secreta (si no puedes escanear el QR):</span>
+            <div class="secret-input-group">
+              <input 
+                type="text" 
+                id="mfaSecret" 
+                class="input" 
+                readonly 
+                value=""
+              />
+              <button class="btn btn--secondary" id="btnCopySecret" type="button">
+                Copiar
+              </button>
+            </div>
+          </label>
+        </div>
+
+        <!-- Verificación -->
+        <div class="verification-container">
+          <label class="field">
+            <span>Ingresa el código de 6 dígitos de tu app autenticadora:</span>
+            <input 
+              type="text" 
+              id="mfaVerificationCode" 
+              class="input" 
+              placeholder="000000"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              autocomplete="one-time-code"
+            />
+          </label>
+          <div class="verification-actions">
+            <button class="btn btn--primary" id="btnVerifyMFA">
+              Verificar y Activar
+            </button>
+            <button class="btn btn--secondary" id="btnCancelSetup">
+              Cancelar
+            </button>
+          </div>
+          <div class="alert alert--error" id="mfaError" style="display: none;"></div>
+          <div class="alert alert--success" id="mfaSuccess" style="display: none;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MFA Habilitado -->
+    <div class="mfa-enabled" id="mfaEnabledSection" style="display: none;">
+      <div class="enabled-card">
+        <div class="enabled-header">
+          <h2>MFA Habilitado</h2>
+          <span class="status-badge status-badge--success">Activo</span>
+        </div>
+        <div class="enabled-content">
+          <p>Tu autenticación de dos factores está activa. Cada vez que inicies sesión, necesitarás ingresar el código de tu app autenticadora.</p>
+          <div class="devices-list" id="devicesList">
+            <!-- Lista de dispositivos se carga aquí -->
+          </div>
+          <div class="enabled-actions">
+            <button class="btn btn--danger" id="btnDisableMFAEnabled">
+              Desactivar MFA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="/static/frontend/js/mfa.js"></script>
+{% endblock %}

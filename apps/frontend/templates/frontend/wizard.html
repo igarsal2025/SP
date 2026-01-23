@@ -1,0 +1,156 @@
+{% extends "frontend/base.html" %}
+{% load role_tags %}
+{% block content %}
+  {% if not user.is_authenticated %}
+    <section class="wizard__panel">
+      <div class="panel-title">Inicio de sesión</div>
+      <div class="panel-subtitle">Accede para habilitar el wizard y las APIs.</div>
+      <form method="post" action="/api/auth/login/?next={{ request.path }}" id="loginForm">
+        {% csrf_token %}
+        <div class="grid grid-2">
+          <label class="field">
+            <span>Usuario</span>
+            <input class="input" name="username" id="loginUsername" type="text" autocomplete="username" required />
+          </label>
+          <label class="field">
+            <span>Contraseña</span>
+            <input class="input" name="password" id="loginPassword" type="password" autocomplete="current-password" required />
+          </label>
+        </div>
+        <div class="field" id="mfaTokenField" style="display: none;">
+          <label class="field">
+            <span>Código de autenticación (6 dígitos)</span>
+            <input class="input" name="otp_token" id="loginOTPToken" type="text" placeholder="000000" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" />
+            <small style="color: var(--color-muted); font-size: 0.875rem;">Ingresa el código de tu app autenticadora</small>
+          </label>
+        </div>
+        <div class="alert alert--error" id="loginError" style="display: none;"></div>
+        <div class="wizard__footer">
+          <button class="btn btn--primary" type="submit" id="loginSubmit">Entrar</button>
+        </div>
+        <div style="margin-top: 1rem; padding: 1rem; background: var(--color-bg-secondary); border-radius: 4px; font-size: 0.875rem;">
+          <strong>Usuarios demo:</strong><br>
+          <code>demo</code> / <code>demo123</code> (Técnico)<br>
+          <code>pm</code> / <code>pm123</code> (Project Manager)<br>
+          <code>supervisor</code> / <code>supervisor123</code> (Supervisor)<br>
+          <code>admin</code> / <code>admin123</code> (Administrador)
+        </div>
+      </form>
+      <script src="/static/frontend/js/login-mfa.js"></script>
+    </section>
+  {% else %}
+  <section class="wizard" data-step="{{ step }}" data-total="{{ total_steps }}" data-project-id="{{ project_id }}" data-report-id="{{ report_id }}" data-refresh-ms="60000">
+    <div class="wizard__header">
+      <div class="wizard__title">Wizard SITEC - Paso {{ step }} de {{ total_steps }}</div>
+      <div class="wizard__eta">ETA estimado: <span id="stepEta">--</span></div>
+    </div>
+    <div class="wizard__status">
+      <span class="status-badge" id="localValidationStatus">Validacion local: --</span>
+      <span class="status-badge" id="serverValidationStatus">Validacion servidor: --</span>
+      <span class="status-badge" id="sectionProgressStatus">Progreso secciones: --</span>
+    </div>
+
+    <div class="wizard__progress">
+      <div class="wizard__progress-bar" id="wizardProgress"></div>
+    </div>
+
+    <div class="wizard__body" role="region" aria-live="polite">
+      <div class="alert alert--error" id="validationBanner" style="display: none;"></div>
+      <div class="alert alert--info" id="conflictBanner" style="display: none;"></div>
+      <div class="alert alert--info" id="aiBanner" style="display: none;"></div>
+      <div id="wizardDynamicContainer"></div>
+
+      <div class="wizard__panel">
+        <div class="panel-title">Estado y validaciones</div>
+        <div class="alert alert--info" id="validationWarnings">
+          Validaciones no criticas permiten continuar.
+        </div>
+        <div class="alert alert--error" id="validationCritical">
+          Errores criticos bloquean el avance.
+        </div>
+      </div>
+
+      {% user_role as current_role %}
+      {% wizard_mode as mode %}
+      {% has_permission "wizard.view" as can_view_wizard %}
+      
+      {% if mode != "readonly" %}
+        {% if current_role == "admin_empresa" or current_role == "pm" or current_role == "supervisor" %}
+          <div class="wizard__panel" data-wizard-component="advanced">
+            <div class="panel-title">Componentes avanzados</div>
+            <div class="panel-subtitle">Vista ligera para validacion UX y consistencia.</div>
+            <div class="component-card">
+              <div data-component="risk-matrix"></div>
+            </div>
+            <div class="component-card">
+              <div data-component="gantt-lite"></div>
+            </div>
+            <div class="component-card">
+              <div data-component="kanban"></div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if user_context.ui_config.can_use_ai_chat %}
+          <div class="wizard__panel" data-wizard-component="ai-chat">
+            <div class="panel-title">Chatbot IA</div>
+            <div class="panel-subtitle">Asistente basado en el contrato IA actual.</div>
+            <div class="ai-chat">
+              <div class="ai-chat__log" id="aiChatLog"></div>
+              <div class="ai-chat__controls">
+                <input class="input" id="aiChatInput" type="text" placeholder="Pide sugerencias para este paso..." />
+                <button class="btn btn--secondary" id="aiChatSend" type="button">Enviar</button>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if user_context.ui_config.can_generate_pdf %}
+          <div class="wizard__panel" data-wizard-component="pdf">
+            <div class="panel-title">PDF del reporte</div>
+            <div class="panel-subtitle">Generacion asincrona y descarga segura.</div>
+            <div class="component-inline">
+              <button class="btn btn--secondary" id="btnGeneratePdf" type="button">Generar PDF</button>
+              <span class="status-badge" id="pdfStatus">Sin generar</span>
+              <a class="btn btn--ghost" id="pdfDownload" href="#" style="display: none;">Descargar PDF</a>
+              <button class="btn btn--ghost" id="btnCopyPdfToken" type="button" style="display: none;">Copiar enlace</button>
+              <span class="helper" id="pdfMeta" style="display: none;"></span>
+            </div>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    <div class="wizard__footer">
+      <button class="btn btn--secondary" id="btnPrev" aria-label="Ir al paso anterior">Anterior</button>
+      <button class="btn btn--primary" id="btnNext" aria-label="Ir al siguiente paso">Siguiente</button>
+      {% has_permission "wizard.save" as can_save %}
+      {% if can_save and mode != "readonly" %}
+        <button class="btn btn--ghost" id="btnSave" aria-label="Guardar progreso">Guardar</button>
+      {% endif %}
+      {% if user_context.ui_config.can_use_field_mode and mode != "readonly" %}
+        <button class="btn btn--field" id="btnFieldMode" aria-label="Activar modo campo">Modo Campo</button>
+      {% endif %}
+    </div>
+  </section>
+
+  {% if mode != "readonly" %}
+    <div class="fab">
+      <button class="fab__button" id="fabActions">+</button>
+      <div class="fab__menu" id="fabMenu">
+        {% if user_context.ui_config.can_use_ai_chat %}
+          <button class="fab__item" id="fabAiSuggest">Sugerir IA</button>
+        {% endif %}
+        <button class="fab__item">Agregar foto</button>
+        {% if can_save %}
+          <button class="fab__item">Guardar borrador</button>
+        {% endif %}
+        {% has_permission "wizard.submit" as can_submit %}
+        {% if can_submit %}
+          <button class="fab__item">Finalizar</button>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+  {% endif %}
+{% endblock %}

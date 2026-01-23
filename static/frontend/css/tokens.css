@@ -1,0 +1,52 @@
+:root {
+  --font-family-base: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --line-height-base: 1.5;
+
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+
+  --radius-md: 10px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  --color-bg: #f7f8fb;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+
+  --color-success: #16a34a;
+  --color-warning: #f59e0b;
+  --color-error: #dc2626;
+  --color-info: #2563eb;
+
+  --color-primary: #0f4c81;
+  --color-primary-hover: #0b3a63;
+  --color-secondary: #334155;
+
+  --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
+  --touch-target-min: 48px;
+  --touch-target-field: 56px;
+}
+
+[data-theme="dark"] {
+  --color-bg: #0f172a;
+  --color-surface: #111827;
+  --color-text: #f9fafb;
+  --color-muted: #9ca3af;
+  --color-border: #1f2937;
+}
+
+[data-mode="field"] {
+  --font-size-md: 18px;
+  --font-size-lg: 20px;
+  --touch-target-min: 56px;
+  --touch-target-field: 64px;
+  --color-bg: #0b0f14;
+  --color-surface: #111827;
+  --color-text: #ffffff;
+}
