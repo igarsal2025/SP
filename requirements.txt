@@ -1,0 +1,12 @@
+Django>=5.0,<6.0
+djangorestframework>=3.15,<4.0
+celery>=5.3,<6.0
+reportlab>=4.0,<5.0
+django-otp>=1.2.0,<2.0
+qrcode>=7.4.2,<8.0
+pyotp>=2.9.0,<3.0
+# Dependencias para producción (Render.com)
+psycopg2-binary>=2.9.0,<3.0
+dj-database-url>=2.1.0,<3.0
+whitenoise>=6.6.0,<7.0
+gunicorn>=21.2.0,<22.0

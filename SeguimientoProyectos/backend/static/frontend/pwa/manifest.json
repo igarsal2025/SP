@@ -1,0 +1,42 @@
+{
+  "name": "SITEC Web - Gestión de Proyectos IT",
+  "short_name": "SITEC",
+  "description": "Plataforma empresarial para gestión integral de proyectos de instalaciones IT en México",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f8fb",
+  "theme_color": "#0f4c81",
+  "orientation": "any",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/static/frontend/pwa/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/frontend/pwa/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Nuevo Reporte",
+      "short_name": "Reporte",
+      "description": "Crear un nuevo reporte semanal",
+      "url": "/wizard/1/",
+      "icons": [
+        {
+          "src": "/static/frontend/pwa/icon-192.svg",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}

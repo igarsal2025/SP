@@ -1,0 +1,121 @@
+# Render Blueprint para SITEC
+# Este archivo define la infraestructura completa del sistema
+# Para usar: render.yaml debe estar en la raíz del repositorio
+
+services:
+  # Web Service - Aplicación Django principal
+  - type: web
+    name: sitec-web
+    env: python
+    buildCommand: ./build.sh
+    startCommand: ./start.sh
+    plan: starter  # free, starter, standard, pro
+    envVars:
+      # Python version
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      
+      # Django settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: sitec.onrender.com
+      
+      # Database
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sitec-db
+          property: connectionString
+      
+      # Redis (opcional)
+      - key: REDIS_URL
+        fromService:
+          name: sitec-redis
+          type: redis
+          property: connectionString
+      
+      # Rate Limiting
+      - key: RATE_LIMIT_ENABLED
+        value: true
+      - key: RATE_LIMIT_REQUESTS
+        value: 100
+      - key: RATE_LIMIT_WINDOW
+        value: 60
+      - key: RATE_LIMIT_USER_REQUESTS
+        value: 200
+      - key: RATE_LIMIT_USER_WINDOW
+        value: 60
+      
+      # CSP Headers
+      - key: CSP_ENABLED
+        value: true
+      - key: CSP_DEFAULT_SRC
+        value: "'self'"
+      - key: CSP_SCRIPT_SRC
+        value: "'self' 'unsafe-inline'"
+      - key: CSP_STYLE_SRC
+        value: "'self' 'unsafe-inline'"
+      - key: CSP_IMG_SRC
+        value: "'self' data: https:"
+      - key: CSP_FONT_SRC
+        value: "'self' data:"
+      - key: CSP_CONNECT_SRC
+        value: "'self'"
+      
+      # Observability
+      - key: OBSERVABILITY_ENABLED
+        value: true
+      - key: OBS_SLOW_REQUEST_MS
+        value: 800
+
+  # Celery Worker - Procesa tareas asíncronas
+  - type: worker
+    name: sitec-celery-worker
+    env: python
+    buildCommand: ./build.sh
+    startCommand: cd backend && celery -A config worker -l info
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sitec-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: sitec-redis
+          type: redis
+          property: connectionString
+
+  # Celery Beat - Scheduler para tareas periódicas
+  - type: worker
+    name: sitec-celery-beat
+    env: python
+    buildCommand: ./build.sh
+    startCommand: cd backend && celery -A config beat -l info
+    plan: starter
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sitec-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          name: sitec-redis
+          type: redis
+          property: connectionString
+
+# Base de datos PostgreSQL
+databases:
+  - name: sitec-db
+    databaseName: sitec
+    user: sitec_user
+    plan: starter  # free (90 días), starter, standard, pro
+
+# Redis para cache y Celery
+services:
+  - type: redis
+    name: sitec-redis
+    plan: starter  # free (25MB), starter, standard, pro
+    maxmemoryPolicy: allkeys-lru

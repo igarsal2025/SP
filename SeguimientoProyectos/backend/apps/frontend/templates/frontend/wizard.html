@@ -1,0 +1,113 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+  {% if not user.is_authenticated %}
+    <section class="wizard__panel">
+      <div class="panel-title">Inicio de sesión</div>
+      <div class="panel-subtitle">Accede para habilitar el wizard y las APIs.</div>
+      <form method="post" action="/admin/login/?next=/">
+        {% csrf_token %}
+        <div class="grid grid-2">
+          <label class="field">
+            <span>Usuario</span>
+            <input class="input" name="username" type="text" autocomplete="username" required />
+          </label>
+          <label class="field">
+            <span>Contraseña</span>
+            <input class="input" name="password" type="password" autocomplete="current-password" required />
+          </label>
+        </div>
+        <div class="wizard__footer">
+          <button class="btn btn--primary" type="submit">Entrar</button>
+        </div>
+      </form>
+    </section>
+  {% else %}
+  <section class="wizard" data-step="{{ step }}" data-total="{{ total_steps }}" data-project-id="{{ project_id }}" data-report-id="{{ report_id }}" data-refresh-ms="60000">
+    <div class="wizard__header">
+      <div class="wizard__title">Wizard SITEC - Paso {{ step }} de {{ total_steps }}</div>
+      <div class="wizard__eta">ETA estimado: <span id="stepEta">--</span></div>
+    </div>
+    <div class="wizard__status">
+      <span class="status-badge" id="localValidationStatus">Validacion local: --</span>
+      <span class="status-badge" id="serverValidationStatus">Validacion servidor: --</span>
+      <span class="status-badge" id="sectionProgressStatus">Progreso secciones: --</span>
+    </div>
+
+    <div class="wizard__progress">
+      <div class="wizard__progress-bar" id="wizardProgress"></div>
+    </div>
+
+    <div class="wizard__body" role="region" aria-live="polite">
+      <div class="alert alert--error" id="validationBanner" style="display: none;"></div>
+      <div class="alert alert--info" id="conflictBanner" style="display: none;"></div>
+      <div class="alert alert--info" id="aiBanner" style="display: none;"></div>
+      <div id="wizardDynamicContainer"></div>
+
+      <div class="wizard__panel">
+        <div class="panel-title">Estado y validaciones</div>
+        <div class="alert alert--info" id="validationWarnings">
+          Validaciones no criticas permiten continuar.
+        </div>
+        <div class="alert alert--error" id="validationCritical">
+          Errores criticos bloquean el avance.
+        </div>
+      </div>
+
+      <div class="wizard__panel">
+        <div class="panel-title">Componentes avanzados</div>
+        <div class="panel-subtitle">Vista ligera para validacion UX y consistencia.</div>
+        <div class="component-card">
+          <div data-component="risk-matrix"></div>
+        </div>
+        <div class="component-card">
+          <div data-component="gantt-lite"></div>
+        </div>
+        <div class="component-card">
+          <div data-component="kanban"></div>
+        </div>
+      </div>
+
+      <div class="wizard__panel">
+        <div class="panel-title">Chatbot IA</div>
+        <div class="panel-subtitle">Asistente basado en el contrato IA actual.</div>
+        <div class="ai-chat">
+          <div class="ai-chat__log" id="aiChatLog"></div>
+          <div class="ai-chat__controls">
+            <input class="input" id="aiChatInput" type="text" placeholder="Pide sugerencias para este paso..." />
+            <button class="btn btn--secondary" id="aiChatSend" type="button">Enviar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="wizard__panel">
+        <div class="panel-title">PDF del reporte</div>
+        <div class="panel-subtitle">Generacion asincrona y descarga segura.</div>
+        <div class="component-inline">
+          <button class="btn btn--secondary" id="btnGeneratePdf" type="button">Generar PDF</button>
+          <span class="status-badge" id="pdfStatus">Sin generar</span>
+          <a class="btn btn--ghost" id="pdfDownload" href="#" style="display: none;">Descargar PDF</a>
+          <button class="btn btn--ghost" id="btnCopyPdfToken" type="button" style="display: none;">Copiar enlace</button>
+          <span class="helper" id="pdfMeta" style="display: none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard__footer">
+      <button class="btn btn--secondary" id="btnPrev" aria-label="Ir al paso anterior">Anterior</button>
+      <button class="btn btn--primary" id="btnNext" aria-label="Ir al siguiente paso">Siguiente</button>
+      <button class="btn btn--ghost" id="btnSave" aria-label="Guardar progreso">Guardar</button>
+      <button class="btn btn--field" id="btnFieldMode" aria-label="Activar modo campo">Modo Campo</button>
+    </div>
+  </section>
+
+  <div class="fab">
+    <button class="fab__button" id="fabActions">+</button>
+    <div class="fab__menu" id="fabMenu">
+      <button class="fab__item" id="fabAiSuggest">Sugerir IA</button>
+      <button class="fab__item">Agregar foto</button>
+      <button class="fab__item">Guardar borrador</button>
+      <button class="fab__item">Finalizar</button>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}

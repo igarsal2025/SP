@@ -1,0 +1,15 @@
+{
+  "name": "sitec-web",
+  "version": "1.0.0",
+  "description": "SITEC Web - Gestión de Proyectos IT",
+  "scripts": {
+    "check-performance": "node scripts/check-performance.js",
+    "lighthouse": "lhci autorun"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.12.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "sitec-web",
+  "version": "1.0.0",
+  "description": "SITEC Web - Gestión de Proyectos IT",
+  "scripts": {
+    "check-performance": "node scripts/check-performance.js",
+    "lighthouse": "lhci autorun",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:wizard": "playwright test wizard.spec.js",
+    "test:e2e:auth": "playwright test auth.spec.js",
+    "test:e2e:report": "playwright show-report",
+    "test:e2e:install": "playwright install"
+  },
+  "devDependencies": {
+    "@lhci/cli": "^0.12.0",
+    "@playwright/test": "^1.40.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

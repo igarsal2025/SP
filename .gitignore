@@ -1,0 +1,218 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.ENV
+.env.local
+.env.*.local
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+*.db
+/media
+/staticfiles
+/static
+celerybeat-schedule
+celerybeat-schedule.*
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+*.cover
+*.py,cover
+.cache
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# OS
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# Node modules (si hay frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build files
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.egg-info/
+
+# Database
+*.sqlite3
+*.sqlite
+*.db
+*.sql
+
+# Storage and uploads
+backend/storage/
+backend/media/
+uploads/
+storage/
+
+# Celery
+celerybeat-schedule
+celerybeat-schedule.*
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+
+# Redis dump
+dump.rdb
+
+# Scripts de validación (opcional - descomentar si no quieres incluirlos)
+# validar_*.ps1
+# validar_mfa.ps1
+# validar_p0.ps1
+# validar_rate_limiting.ps1
+# validar_refinamiento.ps1
+
+# Archivos de datos de prueba generados
+# generar_datos_prueba_p0.py  # Descomentar si no quieres incluirlo
+*.jsonl
+datos_prueba/
+
+# Archivos de configuración local
+config.local.py
+settings.local.py
+
+# Archivos de backup
+*.backup
+backup/
+backups/
+
+# Lighthouse reports
+.lighthouse/
+
+# Performance reports
+performance-reports/
+
+# Coverage reports
+coverage/
+.coverage
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# Profiling data
+*.prof
+*.lprof
+
+# Render
+.render/
+
+# GitHub
+.github/workflows/*.yml.bak
+
+# Archivos temporales de documentación
+docs/temp/
+docs/*.tmp
+*.md.bak
+
+# Archivos de Word (si hay)
+*.docx
+*.doc
+
+# Archivos comprimidos temporales
+*.zip
+*.tar.gz
+*.rar
+
+# Archivos de Python compilados
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de configuración sensibles
+secrets.json
+credentials.json
+*.key
+*.pem
+*.cert

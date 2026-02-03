@@ -1,0 +1,68 @@
+name: Performance Budget Check
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r ../requirements.txt
+
+      - name: Run migrations
+        run: |
+          cd backend
+          python manage.py migrate
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli
+
+      - name: Run Lighthouse CI
+        run: |
+          cd backend
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Check bundle size
+        run: |
+          cd backend/static/frontend/js
+          total_size=$(du -b *.js | awk '{sum+=$1} END {print sum}')
+          echo "Total JS size: $total_size bytes"
+          if [ $total_size -gt 100000 ]; then
+            echo "ERROR: JS bundle size ($total_size bytes) exceeds 100KB limit"
+            exit 1
+          fi
+          echo "✓ JS bundle size within limits"
+
+      - name: Performance Report
+        if: always()
+        run: |
+          echo "## Performance Budget Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Budget Limits:" >> $GITHUB_STEP_SUMMARY
+          echo "- FCP: < 1000ms" >> $GITHUB_STEP_SUMMARY
+          echo "- TTI: < 2500ms" >> $GITHUB_STEP_SUMMARY
+          echo "- JS Initial: < 100KB" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check Lighthouse CI results above for detailed metrics." >> $GITHUB_STEP_SUMMARY

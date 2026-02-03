@@ -1,0 +1,23 @@
+{
+  "version": "v1",
+  "progress_pct": {
+    "weights": {
+      "cabling_nodes_ok": 0.5,
+      "racks_installed": 0.2,
+      "security_devices": 0.15,
+      "materials_count": 0.15
+    },
+    "caps": {
+      "cabling_nodes_ok": 100,
+      "racks_installed": 10,
+      "security_devices": 20,
+      "materials_count": 50
+    }
+  },
+  "incidents_severity": {
+    "thresholds": {
+      "high": 5,
+      "medium": 2
+    }
+  }
+}

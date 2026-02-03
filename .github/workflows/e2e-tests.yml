@@ -1,0 +1,74 @@
+name: Pruebas E2E con Playwright
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 18
+    
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Instalar dependencias de Python
+      run: |
+        cd backend
+        pip install -r ../requirements.txt
+    
+    - name: Instalar dependencias de Node.js
+      run: npm install
+    
+    - name: Instalar navegadores de Playwright
+      run: npx playwright install --with-deps
+    
+    - name: Configurar base de datos
+      run: |
+        cd backend
+        python manage.py migrate
+        python manage.py loaddata initial_data || true
+    
+    - name: Crear datos de prueba
+      run: |
+        cd backend
+        python ../generar_datos_prueba_p0.py || true
+    
+    - name: Iniciar servidor Django
+      run: |
+        cd backend
+        python manage.py runserver 127.0.0.1:8000 &
+        sleep 10
+    
+    - name: Ejecutar pruebas E2E
+      run: npx playwright test
+      env:
+        BASE_URL: http://127.0.0.1:8000
+    
+    - name: Subir resultados de pruebas
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+    
+    - name: Subir screenshots y videos
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: test-results/
+        retention-days: 30
