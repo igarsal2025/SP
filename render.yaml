@@ -21,7 +21,7 @@ services:
       - key: DEBUG
         value: false
       - key: ALLOWED_HOSTS
-        value: sitec.onrender.com
+        value: sitec-web.onrender.com
       
       # Database
       - key: DATABASE_URL
@@ -106,16 +106,15 @@ services:
           type: redis
           property: connectionString
 
+  # Redis para cache y Celery
+  - type: redis
+    name: sitec-redis
+    plan: free  # 25MB; starter/standard/pro para más capacidad
+    maxmemoryPolicy: allkeys-lru
+
 # Base de datos PostgreSQL
 databases:
   - name: sitec-db
     databaseName: sitec
     user: sitec_user
     plan: starter  # free (90 días), starter, standard, pro
-
-# Redis para cache y Celery
-services:
-  - type: redis
-    name: sitec-redis
-    plan: starter  # free (25MB), starter, standard, pro
-    maxmemoryPolicy: allkeys-lru
