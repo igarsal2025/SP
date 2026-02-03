@@ -1,0 +1,65 @@
+{% extends "frontend/base.html" %}
+{% load role_tags %}
+{% block content %}
+  {% if not user.is_authenticated %}
+    <section class="wizard__panel">
+      <div class="panel-title">Inicio de sesión</div>
+      <div class="panel-subtitle">Accede para habilitar el wizard y las APIs.</div>
+      <form method="post" action="/api/auth/login/?next={{ request.path }}">
+        {% csrf_token %}
+        <div class="grid grid-2">
+          <label class="field">
+            <span>Usuario</span>
+            <input class="input" name="username" type="text" autocomplete="username" required />
+          </label>
+          <label class="field">
+            <span>Contraseña</span>
+            <input class="input" name="password" type="password" autocomplete="current-password" required />
+          </label>
+        </div>
+        <div class="wizard__footer">
+          <button class="btn btn--primary" type="submit">Entrar</button>
+        </div>
+      </form>
+    </section>
+  {% else %}
+  <section class="wizard wizard--readonly" data-step="{{ step }}" data-total="{{ total_steps }}" data-project-id="{{ project_id }}" data-report-id="{{ report_id }}">
+    <div class="wizard__header">
+      <div class="wizard__title">Wizard SITEC - Paso {{ step }} de {{ total_steps }} (Solo Lectura)</div>
+      <div class="wizard__eta">Vista de solo lectura</div>
+    </div>
+    <div class="wizard__status">
+      <span class="status-badge" id="localValidationStatus">Validacion local: --</span>
+      <span class="status-badge" id="serverValidationStatus">Validacion servidor: --</span>
+      <span class="status-badge" id="sectionProgressStatus">Progreso secciones: --</span>
+    </div>
+
+    <div class="wizard__progress">
+      <div class="wizard__progress-bar" id="wizardProgress"></div>
+    </div>
+
+    <div class="wizard__body" role="region" aria-live="polite">
+      <div class="alert alert--info">
+        <strong>Modo de solo lectura</strong>
+        <p>Estás viendo este reporte en modo de solo lectura. No puedes editar ni guardar cambios.</p>
+      </div>
+      <div id="wizardDynamicContainer"></div>
+
+      <div class="wizard__panel">
+        <div class="panel-title">Estado y validaciones</div>
+        <div class="alert alert--info" id="validationWarnings">
+          Validaciones no criticas permiten continuar.
+        </div>
+        <div class="alert alert--error" id="validationCritical">
+          Errores criticos bloquean el avance.
+        </div>
+      </div>
+    </div>
+
+    <div class="wizard__footer">
+      <button class="btn btn--secondary" id="btnPrev" aria-label="Ir al paso anterior">Anterior</button>
+      <button class="btn btn--primary" id="btnNext" aria-label="Ir al siguiente paso">Siguiente</button>
+    </div>
+  </section>
+  {% endif %}
+{% endblock %}

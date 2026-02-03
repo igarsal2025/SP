@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es-MX" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f4c81" />
+    <meta name="description" content="Plataforma empresarial para gestión integral de proyectos de instalaciones IT en México" />
+    <title>SITEC Web</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/static/frontend/css/tokens.css" />
+    <link rel="stylesheet" href="/static/frontend/css/components.css" />
+    <link rel="stylesheet" href="/static/frontend/css/wizard.css" />
+    <link rel="stylesheet" href="/static/frontend/css/animations.css" />
+    <link rel="stylesheet" href="/static/frontend/css/responsive.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+    <header class="topbar">
+      <div class="brand">SITEC</div>
+      <div class="status" id="syncStatus" role="status" aria-live="polite">Offline</div>
+      <div class="last-saved" id="lastSaved" style="font-size: 0.75rem; color: var(--color-muted);"></div>
+      {% if user.is_authenticated %}
+      <div class="topbar-actions">
+        <a href="/settings/mfa/" class="btn btn--secondary btn--sm" style="text-decoration: none;">Seguridad</a>
+      </div>
+      {% endif %}
+    </header>
+    <main class="container" id="mainContent" tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
+    <!-- Carga diferida: solo se cargan los módulos necesarios según la página -->
+    <script src="/static/frontend/js/lazy-loader.js"></script>
+    <script src="/static/frontend/js/data-loader.js"></script>
+  </body>
+</html>

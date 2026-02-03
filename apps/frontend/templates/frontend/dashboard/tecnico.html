@@ -1,0 +1,30 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+  <section class="dashboard">
+    <div class="wizard__header">
+      <div class="wizard__title">Dashboard (Técnico)</div>
+      <div class="wizard__eta">
+        Estado: <span class="status-badge" id="dashboardStatus">Cargando...</span>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="projects">
+      <div class="panel-title">Mis proyectos</div>
+      <div class="panel-subtitle">Proyectos recientes asignados.</div>
+      <div class="table-wrap">
+        <table class="data-table" id="projectsTable"></table>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="reports">
+      <div class="panel-title">Mis reportes</div>
+      <div class="panel-subtitle">Reportes recientes.</div>
+      <div class="table-wrap">
+        <table class="data-table" id="reportsTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/frontend/js/dashboard-lite.js"></script>
+{% endblock %}
+

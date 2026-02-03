@@ -1,0 +1,152 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+  <section class="dashboard">
+    <div class="wizard__header">
+      <div class="wizard__title">Dashboard (Admin)</div>
+      <div class="wizard__eta">
+        Estado: <span class="status-badge" id="dashboardStatus">Cargando...</span>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="kpis">
+      <div class="panel-title">KPIs principales</div>
+      <div class="panel-subtitle">Filtros opcionales para análisis personalizado</div>
+      <div class="component-inline" style="margin-bottom: 1rem;">
+        <label class="helper" for="dashboardProjectFilter">Proyecto:</label>
+        <select class="input" id="dashboardProjectFilter" style="max-width: 200px;">
+          <option value="">Todos los proyectos</option>
+        </select>
+        <label class="helper" for="dashboardStartDate">Desde:</label>
+        <input type="date" class="input" id="dashboardStartDate" style="max-width: 150px;">
+        <label class="helper" for="dashboardEndDate">Hasta:</label>
+        <input type="date" class="input" id="dashboardEndDate" style="max-width: 150px;">
+        <button class="btn btn--ghost" id="dashboardApplyFilters" type="button">Aplicar Filtros</button>
+        <button class="btn btn--ghost" id="dashboardResetFilters" type="button">Restablecer</button>
+      </div>
+      <div class="grid grid-2" id="dashboardKpis"></div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="alerts">
+      <div class="panel-title">Alertas</div>
+      <div class="panel-subtitle">Eventos que requieren atencion.</div>
+      <div id="dashboardAlerts"></div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="comparatives">
+      <div class="panel-title">Comparativos</div>
+      <div class="panel-subtitle">Variaciones respecto a la semana anterior.</div>
+      <div class="grid grid-2" id="dashboardComparatives"></div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="trends">
+      <div class="panel-title">Tendencias Históricas</div>
+      <div class="panel-subtitle">Evolución de métricas clave en el tiempo.</div>
+      <div class="component-inline">
+        <label class="helper" for="trendsPeriodType">Tipo:</label>
+        <select class="input" id="trendsPeriodType">
+          <option value="month" selected>Mensual</option>
+          <option value="week">Semanal</option>
+        </select>
+        <label class="helper" for="trendsPeriods">Períodos:</label>
+        <select class="input" id="trendsPeriods">
+          <option value="6">6 períodos</option>
+          <option value="12" selected>12 períodos</option>
+          <option value="24">24 períodos</option>
+        </select>
+        <button class="btn btn--ghost" id="loadTrendsBtn" type="button">Cargar</button>
+      </div>
+      <div id="trendsContainer" style="margin-top: 1rem;">
+        <div class="helper">Selecciona tipo y períodos, luego haz clic en "Cargar"</div>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="history">
+      <div class="panel-title">Historico de snapshots</div>
+      <div class="panel-subtitle">Ultimos cortes por periodo.</div>
+      <div class="component-inline">
+        <label class="helper" for="historyPeriodSelect">Periodo:</label>
+        <select class="input" id="historyPeriodSelect">
+          <option value="7">7 dias</option>
+          <option value="30" selected>30 dias</option>
+          <option value="90">90 dias</option>
+          <option value="180">180 dias</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="historyTable"></table>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="aggregate">
+      <div class="panel-title">Historico agregado (mensual)</div>
+      <div class="panel-subtitle">Resumen consolidado por mes.</div>
+      <div class="table-wrap">
+        <table class="data-table" id="aggregateTable"></table>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="roi">
+      <div class="panel-title">KPIs ROI</div>
+      <div class="panel-subtitle">Indicadores de retorno sobre inversión.</div>
+      <div class="component-inline">
+        <label class="helper" for="roiPeriodSelect">Periodo:</label>
+        <select class="input" id="roiPeriodSelect">
+          <option value="30" selected>30 dias</option>
+          <option value="90">90 dias</option>
+          <option value="180">180 dias</option>
+        </select>
+        <button class="btn btn--ghost" id="roiExportBtn" type="button">Exportar CSV</button>
+      </div>
+      <div class="grid grid-2" id="roiKpis"></div>
+      <div class="table-wrap">
+        <table class="data-table" id="roiTable"></table>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="projects">
+      <div class="panel-title">Proyectos recientes</div>
+      <div class="panel-subtitle">Listado de proyectos activos y estado.</div>
+      <div class="component-inline">
+        <label class="helper" for="projectStatusFilter">Estado:</label>
+        <select class="input" id="projectStatusFilter">
+          <option value="">Todos</option>
+          <option value="planning">Planificación</option>
+          <option value="in_progress">En progreso</option>
+          <option value="on_hold">En pausa</option>
+          <option value="completed">Completado</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+        <button class="btn btn--ghost" id="projectsPrev" type="button">Anterior</button>
+        <button class="btn btn--ghost" id="projectsNext" type="button">Siguiente</button>
+        <span class="helper" id="projectsPageInfo">Página 1</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="projectsTable"></table>
+      </div>
+    </div>
+
+    <div class="wizard__panel" data-dashboard-section="reports">
+      <div class="panel-title">Reportes recientes</div>
+      <div class="panel-subtitle">Reportes semanales más recientes.</div>
+      <div class="component-inline">
+        <label class="helper" for="reportStatusFilter">Estado:</label>
+        <select class="input" id="reportStatusFilter">
+          <option value="">Todos</option>
+          <option value="draft">Borrador</option>
+          <option value="submitted">Enviado</option>
+          <option value="approved">Aprobado</option>
+          <option value="rejected">Rechazado</option>
+        </select>
+        <button class="btn btn--ghost" id="reportsPrev" type="button">Anterior</button>
+        <button class="btn btn--ghost" id="reportsNext" type="button">Siguiente</button>
+        <span class="helper" id="reportsPageInfo">Página 1</span>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="reportsTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/frontend/js/dashboard.js"></script>
+{% endblock %}
+

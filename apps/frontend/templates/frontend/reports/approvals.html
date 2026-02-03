@@ -1,0 +1,22 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+  <section class="dashboard">
+    <div class="wizard__header">
+      <div class="wizard__title">Aprobaciones</div>
+      <div class="wizard__eta">
+        Estado: <span class="status-badge" id="approvalsStatus">Cargando...</span>
+      </div>
+    </div>
+
+    <div class="wizard__panel">
+      <div class="panel-title">Reportes pendientes</div>
+      <div class="panel-subtitle">Solo visible para Supervisor/PM/Admin.</div>
+      <div class="table-wrap">
+        <table class="data-table" id="approvalsTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/frontend/js/sections-approvals.js"></script>
+{% endblock %}
+

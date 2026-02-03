@@ -1,0 +1,1 @@
+{"input": {"steps": {"1": {"project_name": "Demo"}}}, "output": {"status": "draft", "progress_pct": 10, "incidents": false, "incidents_severity": "", "submitted_at": null, "approved_at": null}, "meta": {"report_id": "407a4609-8003-4bb1-9f31-74d29d4eff55", "project_id": null, "created_at": "2026-01-19T03:50:27.933255+00:00", "schema_version": 1}}

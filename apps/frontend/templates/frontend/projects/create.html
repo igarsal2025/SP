@@ -1,0 +1,84 @@
+{% extends "frontend/base.html" %}
+{% load role_tags %}
+{% block content %}
+  <section class="dashboard">
+    <div class="wizard__header">
+      <div class="wizard__title">Crear Proyecto</div>
+      <div class="wizard__eta">
+        <a href="/projects/" class="btn btn--ghost">← Volver</a>
+      </div>
+    </div>
+
+    <div class="wizard__panel" id="projectCreatePanel">
+      <div class="panel-title">Nuevo Proyecto</div>
+      <div class="panel-subtitle">Completa la información del proyecto.</div>
+      <form id="projectCreateForm" class="wizard__form">
+        <div class="field">
+          <label class="field-label" for="projectName">Nombre del Proyecto *</label>
+          <input class="input" type="text" id="projectName" name="name" required />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectCode">Código del Proyecto *</label>
+          <input class="input" type="text" id="projectCode" name="code" required />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectDescription">Descripción</label>
+          <textarea class="input" id="projectDescription" name="description" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectSiteAddress">Dirección del Sitio *</label>
+          <textarea class="input" id="projectSiteAddress" name="site_address" rows="2" required></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectClientName">Nombre del Cliente</label>
+          <input class="input" type="text" id="projectClientName" name="client_name" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectClientContact">Contacto del Cliente</label>
+          <input class="input" type="text" id="projectClientContact" name="client_contact" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectStartDate">Fecha de Inicio *</label>
+          <input class="input" type="date" id="projectStartDate" name="start_date" required />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectEstimatedEndDate">Fecha Estimada de Fin</label>
+          <input class="input" type="date" id="projectEstimatedEndDate" name="estimated_end_date" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectStatus">Estado *</label>
+          <select class="input" id="projectStatus" name="status" required>
+            <option value="planning">Planificación</option>
+            <option value="in_progress">En Progreso</option>
+            <option value="on_hold">En Pausa</option>
+            <option value="completed">Completado</option>
+            <option value="cancelled">Cancelado</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectPriority">Prioridad *</label>
+          <select class="input" id="projectPriority" name="priority" required>
+            <option value="low">Baja</option>
+            <option value="medium" selected>Media</option>
+            <option value="high">Alta</option>
+            <option value="urgent">Urgente</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectProgress">Progreso (%)</label>
+          <input class="input" type="number" id="projectProgress" name="progress_pct" min="0" max="100" value="0" />
+        </div>
+        <div class="field">
+          <label class="field-label" for="projectBudgetEstimated">Presupuesto Estimado (MXN)</label>
+          <input class="input" type="number" id="projectBudgetEstimated" name="budget_estimated" step="0.01" min="0" />
+        </div>
+        <div class="component-inline" style="margin-top: 1.5rem;">
+          <button class="btn btn--primary" type="submit">Crear Proyecto</button>
+          <a href="/projects/" class="btn btn--ghost">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script src="/static/frontend/js/project-create.js"></script>
+{% endblock %}

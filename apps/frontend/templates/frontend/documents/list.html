@@ -1,0 +1,22 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+  <section class="dashboard">
+    <div class="wizard__header">
+      <div class="wizard__title">Documentos</div>
+      <div class="wizard__eta">
+        Estado: <span class="status-badge" id="documentsStatus">Cargando...</span>
+      </div>
+    </div>
+
+    <div class="wizard__panel">
+      <div class="panel-title">Listado</div>
+      <div class="panel-subtitle">Descargas disponibles según tu perfil.</div>
+      <div class="table-wrap">
+        <table class="data-table" id="documentsTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/frontend/js/sections-documents.js"></script>
+{% endblock %}
+
