@@ -127,6 +127,9 @@ services:
     name: sitec-redis
     plan: free  # 25MB; starter/standard/pro para más capacidad
     maxmemoryPolicy: allkeys-lru
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: Allow all IPs
 
 # Base de datos PostgreSQL
 databases:
