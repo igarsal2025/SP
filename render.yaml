@@ -9,7 +9,7 @@ services:
     env: python
     buildCommand: ./build.sh
     startCommand: ./start.sh
-    plan: starter  # free, starter, standard, pro
+    plan: free  # free, starter, standard, pro
     envVars:
       # Python version
       - key: PYTHON_VERSION
@@ -70,58 +70,6 @@ services:
       - key: OBS_SLOW_REQUEST_MS
         value: 800
 
-  # Celery Worker - Procesa tareas asíncronas
-  - type: worker
-    name: sitec-celery-worker
-    env: python
-    buildCommand: ./build.sh
-    startCommand: cd backend && celery -A config worker -l info
-    plan: starter
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: SECRET_KEY
-        generateValue: true
-      - key: DEBUG
-        value: false
-      - key: ALLOWED_HOSTS
-        value: sitec-web.onrender.com
-      - key: DATABASE_URL
-        fromDatabase:
-          name: sitec-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: sitec-redis
-          type: redis
-          property: connectionString
-
-  # Celery Beat - Scheduler para tareas periódicas
-  - type: worker
-    name: sitec-celery-beat
-    env: python
-    buildCommand: ./build.sh
-    startCommand: cd backend && celery -A config beat -l info
-    plan: starter
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
-      - key: SECRET_KEY
-        generateValue: true
-      - key: DEBUG
-        value: false
-      - key: ALLOWED_HOSTS
-        value: sitec-web.onrender.com
-      - key: DATABASE_URL
-        fromDatabase:
-          name: sitec-db
-          property: connectionString
-      - key: REDIS_URL
-        fromService:
-          name: sitec-redis
-          type: redis
-          property: connectionString
-
   # Redis para cache y Celery
   - type: redis
     name: sitec-redis
@@ -136,4 +84,4 @@ databases:
   - name: sitec-db
     databaseName: sitec
     user: sitec_user
-    plan: starter  # free (90 días), starter, standard, pro
+    plan: free  # free (90 días), starter, standard, pro

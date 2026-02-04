@@ -1,0 +1,16 @@
+[Unit]
+Description=Celery Worker (SITEC)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/SP/backend
+EnvironmentFile=/etc/sitec/sitec.env
+ExecStart=/home/ubuntu/SP/.venv/bin/celery -A config worker -l info
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
