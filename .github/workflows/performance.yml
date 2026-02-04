@@ -39,7 +39,13 @@ jobs:
 
       - name: Run Lighthouse CI
         run: |
-          lhci autorun --config=.lighthouserc.js
+          lhci autorun --config=.lighthouserc.js \
+            --collect.url="http://localhost:8000/" \
+            --collect.url="http://localhost:8000/wizard/1/" \
+            --collect.startServerCommand="cd backend && python manage.py runserver" \
+            --collect.startServerReadyPattern="Starting development server" \
+            --collect.startServerReadyTimeout=30000 \
+            --collect.numberOfRuns=3
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
