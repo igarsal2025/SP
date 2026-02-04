@@ -6,66 +6,58 @@ import django.db.models.deletion
 
 def create_index_if_not_exists(apps, schema_editor):
     """Crear índices solo si no existen, manejando conflictos"""
-    db_alias = schema_editor.connection.alias
     connection = schema_editor.connection
-    
+
+    def index_exists(table_name, index_name):
+        with connection.cursor() as cursor:
+            constraints = connection.introspection.get_constraints(cursor, table_name)
+        return any(
+            name == index_name and info.get("index", False)
+            for name, info in constraints.items()
+        )
+
     # Verificar y crear índice para Cliente si no existe
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT name FROM sqlite_master 
-            WHERE type='index' AND name='transactions_cliente_company_idx'
-        """)
-        if not cursor.fetchone():
-            try:
+    if not index_exists("transactions_cliente", "transactions_cliente_company_idx"):
+        try:
+            with connection.cursor() as cursor:
                 cursor.execute("""
                     CREATE INDEX transactions_cliente_company_idx 
                     ON transactions_cliente (company_id, sitec_id)
                 """)
-            except Exception as e:
-                # Si el índice ya existe por alguna razón, ignorar el error
-                if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
-                    raise
-    
+        except Exception as e:
+            # Si el índice ya existe por alguna razón, ignorar el error
+            if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
+                raise
+
     # Verificar y crear índice para Transaccion si no existe
-    # Primero verificar si existe el índice que causa el conflicto
-    with connection.cursor() as cursor:
-        # Verificar si existe el índice conflictivo
-        cursor.execute("""
-            SELECT name FROM sqlite_master 
-            WHERE type='index' AND name='transactions_company_idx'
-        """)
-        conflicting_index = cursor.fetchone()
-        
-        # Verificar si existe el índice compuesto que queremos crear
-        cursor.execute("""
-            SELECT name FROM sqlite_master 
-            WHERE type='index' AND name='transactions_transaccion_company_idx'
-        """)
-        target_index = cursor.fetchone()
-        
-        # Si existe el índice conflictivo pero no el que queremos, eliminar el conflictivo y crear el correcto
-        if conflicting_index and not target_index:
-            try:
+    conflicting_index = index_exists("transactions_transaccion", "transactions_company_idx")
+    target_index = index_exists("transactions_transaccion", "transactions_transaccion_company_idx")
+
+    # Si existe el índice conflictivo pero no el que queremos, eliminar el conflictivo y crear el correcto
+    if conflicting_index and not target_index:
+        try:
+            with connection.cursor() as cursor:
                 cursor.execute("DROP INDEX IF EXISTS transactions_company_idx")
                 cursor.execute("""
                     CREATE INDEX transactions_transaccion_company_idx 
                     ON transactions_transaccion (company_id, sitec_id)
                 """)
-            except Exception as e:
-                # Si el índice ya existe, ignorar el error
-                if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
-                    raise
-        # Si no existe ninguno, crear el índice compuesto
-        elif not target_index:
-            try:
+        except Exception as e:
+            # Si el índice ya existe, ignorar el error
+            if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
+                raise
+    # Si no existe ninguno, crear el índice compuesto
+    elif not target_index:
+        try:
+            with connection.cursor() as cursor:
                 cursor.execute("""
                     CREATE INDEX transactions_transaccion_company_idx 
                     ON transactions_transaccion (company_id, sitec_id)
                 """)
-            except Exception as e:
-                # Si el índice ya existe, ignorar el error
-                if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
-                    raise
+        except Exception as e:
+            # Si el índice ya existe, ignorar el error
+            if 'already exists' not in str(e).lower() and 'duplicate' not in str(e).lower():
+                raise
 
 
 def reverse_index_creation(apps, schema_editor):

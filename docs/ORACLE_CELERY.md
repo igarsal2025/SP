@@ -71,3 +71,8 @@ sudo journalctl -u celery-beat -f
 
 ## Seguridad recomendada
 Limita `ipAllowList` de Redis en Render a la IP publica de la VM.
+
+## Migracion a Oracle Org
+Si el entorno actual es temporal, deja `ipAllowList` abierto solo mientras
+se realiza la migracion. Cuando la VM de Oracle este lista, actualiza
+`ipAllowList` con la IP publica de esa VM para cerrar el acceso.
