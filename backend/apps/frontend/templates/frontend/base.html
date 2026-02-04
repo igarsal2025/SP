@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es-MX" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f4c81" />
+    <meta name="description" content="Plataforma empresarial para gestión integral de proyectos de instalaciones IT en México" />
+    <title>SITEC Web</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="/static/frontend/css/tokens.css" />
+    <link rel="stylesheet" href="/static/frontend/css/components.css" />
+    <link rel="stylesheet" href="/static/frontend/css/wizard.css" />
+    <link rel="stylesheet" href="/static/frontend/css/animations.css" />
+    <link rel="stylesheet" href="/static/frontend/css/responsive.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#mainContent">Saltar al contenido</a>
+    <header class="topbar">
+      <div class="brand">SITEC</div>
+      <div class="status" id="syncStatus" role="status" aria-live="polite">Offline</div>
+      <div class="last-saved" id="lastSaved" style="font-size: 0.75rem; color: var(--color-muted);"></div>
+      {% if user.is_authenticated %}
+      <div class="topbar-actions">
+        <span class="user-info" style="margin-right: 1rem; color: var(--color-text); font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+          <span style="color: var(--color-muted);">Usuario:</span>
+          <strong style="color: var(--color-primary);">{{ user.username }}</strong>
+          {% if user.first_name or user.last_name %}
+            <span style="color: var(--color-text-secondary);">({{ user.first_name }} {{ user.last_name }})</span>
+          {% endif %}
+        </span>
+        <a href="/settings/mfa/" class="btn btn--secondary btn--sm" style="text-decoration: none;">Seguridad</a>
+        <form method="post" action="/api/auth/logout/" id="logoutForm" style="display: inline;">
+          {% csrf_token %}
+          <button type="submit" class="btn btn--secondary btn--sm" style="text-decoration: none; border: none; cursor: pointer;">Cerrar Sesión</button>
+        </form>
+        <script>
+          // Manejar logout con JavaScript para mejor UX
+          document.addEventListener('DOMContentLoaded', function() {
+            const logoutForm = document.getElementById('logoutForm');
+            if (logoutForm) {
+              logoutForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                try {
+                  const response = await fetch('/api/auth/logout/', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': getCSRFToken(),
+                    },
+                    credentials: 'include',
+                  });
+                  
+                  if (response.ok) {
+                    // Redirigir al login después de logout exitoso
+                    window.location.href = '/login/';
+                  } else {
+                    // Si falla, intentar redirigir de todas formas
+                    window.location.href = '/login/';
+                  }
+                } catch (error) {
+                  console.error('[Logout] Error:', error);
+                  // Redirigir de todas formas
+                  window.location.href = '/login/';
+                }
+              });
+            }
+            
+            // Función helper para obtener CSRF token
+            function getCSRFToken() {
+              const name = 'csrftoken';
+              const cookies = document.cookie.split(';');
+              for (let cookie of cookies) {
+                const [key, value] = cookie.trim().split('=');
+                if (key === name) {
+                  return decodeURIComponent(value);
+                }
+              }
+              return '';
+            }
+          });
+        </script>
+      </div>
+      {% else %}
+      <div class="topbar-actions">
+        <a href="/login/" class="btn btn--primary btn--sm" style="text-decoration: none;">Iniciar Sesión</a>
+      </div>
+      {% endif %}
+    </header>
+    <main class="container" id="mainContent" tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
+    <!-- Script de diagnóstico -->
+    <script src="/static/frontend/js/system-check.js"></script>
+    <!-- Script de prueba de botones (solo en desarrollo) -->
+    {% if debug %}
+    <script src="/static/frontend/js/test-buttons.js"></script>
+    {% endif %}
+    <!-- Carga diferida: solo se cargan los módulos necesarios según la página -->
+    <script src="/static/frontend/js/lazy-loader.js"></script>
+    <script src="/static/frontend/js/data-loader.js"></script>
+  </body>
+</html>

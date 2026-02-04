@@ -1,0 +1,39 @@
+{% extends "frontend/base.html" %}
+{% load role_tags %}
+{% block content %}
+  <section class="dashboard">
+    <div class="wizard__header">
+      <div class="wizard__title">Proyectos</div>
+      <div class="wizard__eta">
+        Estado: <span class="status-badge" id="projectsStatus">Cargando...</span>
+      </div>
+    </div>
+
+    <div class="wizard__panel">
+      <div class="panel-title">Listado</div>
+      <div class="panel-subtitle">Proyectos disponibles según tu perfil.</div>
+      <div class="component-inline">
+        {% has_permission "projects.create" as can_create %}
+        {% if can_create %}
+          <button class="btn btn--primary" id="projectsCreateBtn" type="button">Crear Proyecto</button>
+        {% endif %}
+        <label class="helper" for="projectStatusFilter">Estado:</label>
+        <select class="input" id="projectStatusFilter">
+          <option value="">Todos</option>
+          <option value="planning">Planificación</option>
+          <option value="in_progress">En progreso</option>
+          <option value="on_hold">En pausa</option>
+          <option value="completed">Completado</option>
+          <option value="cancelled">Cancelado</option>
+        </select>
+        <button class="btn btn--ghost" id="projectsReload" type="button">Recargar</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table" id="projectsListTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <script src="/static/frontend/js/sections-projects.js"></script>
+{% endblock %}
+

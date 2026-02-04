@@ -1,0 +1,67 @@
+{% extends "frontend/base.html" %}
+{% block content %}
+  <section class="wizard__panel" style="max-width: 500px; margin: 2rem auto;">
+    <div class="panel-title">Inicio de sesión</div>
+    <div class="panel-subtitle">Accede para habilitar el wizard y las APIs.</div>
+    <form method="post" action="/api/auth/login/?next={{ request.GET.next|default:'/' }}" id="loginForm">
+      {% csrf_token %}
+      <div class="grid grid-2">
+        <label class="field">
+          <span>Usuario</span>
+          <input class="input" name="username" id="loginUsername" type="text" autocomplete="username" required />
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <input class="input" name="password" id="loginPassword" type="password" autocomplete="current-password" required />
+        </label>
+      </div>
+      <div class="field" id="mfaTokenField" style="display: none;">
+        <label class="field">
+          <span>Código de autenticación (6 dígitos)</span>
+          <input class="input" name="otp_token" id="loginOTPToken" type="text" placeholder="000000" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" />
+          <small style="color: var(--color-muted); font-size: 0.875rem;">Ingresa el código de tu app autenticadora</small>
+        </label>
+      </div>
+      <div class="alert alert--error" id="loginError" style="display: none;"></div>
+      <div class="wizard__footer" style="display: flex !important; visibility: visible !important; margin-top: 1.5rem;">
+        <button class="btn btn--primary" type="submit" id="loginSubmit" style="display: block !important; visibility: visible !important; opacity: 1 !important; width: 100%;">Entrar</button>
+      </div>
+      <div style="margin-top: 1rem; padding: 1rem; background: var(--color-bg-secondary); border-radius: 4px; font-size: 0.875rem;">
+        <strong>Usuarios demo:</strong><br>
+        <code>demo</code> / <code>demo123</code> (Técnico)<br>
+        <code>pm</code> / <code>pm123</code> (Project Manager)<br>
+        <code>supervisor</code> / <code>supervisor123</code> (Supervisor)<br>
+        <code>admin</code> / <code>admin123</code> (Administrador)
+      </div>
+    </form>
+    <script src="/static/frontend/js/login-mfa.js"></script>
+    <script>
+      // Asegurar que el botón de login sea visible
+      document.addEventListener('DOMContentLoaded', function() {
+        const loginSubmit = document.getElementById('loginSubmit');
+        const loginForm = document.getElementById('loginForm');
+        const wizardFooter = document.querySelector('.wizard__footer');
+        
+        if (loginSubmit) {
+          loginSubmit.style.display = 'block';
+          loginSubmit.style.visibility = 'visible';
+          loginSubmit.style.opacity = '1';
+          console.log('[Login] Botón de login encontrado y visible');
+        } else {
+          console.error('[Login] ERROR: Botón de login no encontrado');
+        }
+        
+        if (wizardFooter) {
+          wizardFooter.style.display = 'flex';
+          wizardFooter.style.visibility = 'visible';
+        }
+        
+        if (loginForm) {
+          console.log('[Login] Formulario de login encontrado');
+        } else {
+          console.error('[Login] ERROR: Formulario de login no encontrado');
+        }
+      });
+    </script>
+  </section>
+{% endblock %}

@@ -1,0 +1,270 @@
+{
+  "schema_version": 1,
+  "steps": {
+    "1": {
+      "title": "Datos generales",
+      "sections": [
+        {
+          "title": "Identificacion",
+          "fields": [
+            { "name": "project_name", "type": "text", "required": true },
+            { "name": "project_code", "type": "text", "required": false, "regex": "^[A-Za-z0-9_\\-]{0,40}$" },
+            { "name": "week_start", "type": "date", "required": true }
+          ]
+        },
+        {
+          "title": "Ubicacion y contacto",
+          "fields": [
+            { "name": "site_address", "type": "text", "required": true },
+            { "name": "site_city", "type": "text", "required": false },
+            { "name": "site_state", "type": "text", "required": false },
+            { "name": "technician", "type": "text", "required": true },
+            { "name": "client_name", "type": "text", "required": false },
+            { "name": "site_contact", "type": "text", "required": false }
+          ]
+        },
+        {
+          "title": "Notas",
+          "fields": [
+            { "name": "initial_notes", "type": "textarea", "required": false }
+          ]
+        }
+      ]
+    },
+    "2": {
+      "title": "Planificación y estado",
+      "sections": [
+        {
+          "title": "Estado del proyecto",
+          "fields": [
+            { "name": "progress_pct", "type": "number", "required": true, "min": 0, "max": 100 },
+            { "name": "schedule_status", "type": "text", "required": false }
+          ]
+        },
+        {
+          "title": "Fechas",
+          "fields": [
+            { "name": "planned_start", "type": "date", "required": false },
+            { "name": "planned_end", "type": "date", "required": false },
+            { "name": "actual_start", "type": "date", "required": false },
+            { "name": "actual_end", "type": "date", "required": false }
+          ]
+        },
+        {
+          "title": "Riesgos",
+          "fields": [
+            { "name": "risks_summary", "type": "textarea", "required": false }
+          ]
+        }
+      ]
+    },
+    "3": {
+      "title": "Cableado y nodos",
+      "sections": [
+        {
+          "title": "Volumen de cableado",
+          "fields": [
+            { "name": "cabling_nodes_total", "type": "number", "required": true, "min": 0 },
+            { "name": "cabling_nodes_ok", "type": "number", "required": false, "min": 0 }
+          ]
+        },
+        {
+          "title": "Calidad y materiales",
+          "fields": [
+            { "name": "cable_type", "type": "text", "required": false },
+            { "name": "cable_length_m", "type": "number", "required": false, "min": 0 },
+            { "name": "cable_trays_ok", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "labeling_ok", "type": "select", "required": false, "options": ["true", "false"] }
+          ]
+        }
+      ]
+    },
+    "4": {
+      "title": "Gabinetes y racks",
+      "sections": [
+        {
+          "title": "Racks",
+          "fields": [
+            { "name": "racks_installed", "type": "number", "required": true, "min": 0 },
+            { "name": "rack_order_ok", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "rack_units_used", "type": "number", "required": false, "min": 0 }
+          ]
+        },
+        {
+          "title": "Energia y enfriamiento",
+          "fields": [
+            { "name": "cooling_ok", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "power_ok", "type": "select", "required": false, "options": ["true", "false"] }
+          ]
+        }
+      ]
+    },
+    "5": {
+      "title": "Seguridad y audiovisual",
+      "sections": [
+        {
+          "title": "Seguridad",
+          "fields": [
+            { "name": "security_devices", "type": "number", "required": true, "min": 0 },
+            { "name": "cameras_online", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "camera_count", "type": "number", "required": false, "min": 0 },
+            { "name": "access_control_count", "type": "number", "required": false, "min": 0 }
+          ]
+        },
+        {
+          "title": "Audiovisual",
+          "fields": [
+            { "name": "av_systems_count", "type": "number", "required": false, "min": 0 },
+            { "name": "security_notes", "type": "textarea", "required": false }
+          ]
+        }
+      ]
+    },
+    "6": {
+      "title": "Sistemas especializados",
+      "sections": [
+        {
+          "title": "Configuracion",
+          "fields": [
+            { "name": "special_systems_enabled", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "special_systems_type", "type": "text", "required": false, "show_if": { "special_systems_enabled": "true" } },
+            { "name": "special_systems_vendor", "type": "text", "required": false, "show_if": { "special_systems_enabled": "true" } },
+            { "name": "special_systems_integration_ok", "type": "select", "required": false, "options": ["true", "false"], "show_if": { "special_systems_enabled": "true" } }
+          ]
+        },
+        {
+          "title": "Notas",
+          "fields": [
+            { "name": "special_systems_notes", "type": "textarea", "required": true, "required_if": { "special_systems_enabled": "true" } }
+          ]
+        }
+      ]
+    },
+    "7": {
+      "title": "Materiales y herramientas",
+      "sections": [
+        {
+          "title": "Materiales",
+          "fields": [
+            { "name": "materials_count", "type": "number", "required": true, "min": 0 },
+            { "name": "materials_list", "type": "textarea", "required": false }
+          ]
+        },
+        {
+          "title": "Herramientas y faltantes",
+          "fields": [
+            { "name": "tools_used", "type": "text", "required": false },
+            { "name": "missing_materials", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "missing_materials_detail", "type": "text", "required": false, "required_if": { "missing_materials": "true" } }
+          ]
+        }
+      ]
+    },
+    "8": {
+      "title": "Pruebas y verificación",
+      "sections": [
+        {
+          "title": "Resultado",
+          "fields": [
+            { "name": "tests_passed", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "qa_signed", "type": "select", "required": false, "options": ["true", "false"] }
+          ]
+        },
+        {
+          "title": "Notas",
+          "fields": [
+            { "name": "test_notes", "type": "textarea", "required": false }
+          ]
+        }
+      ]
+    },
+    "9": {
+      "title": "Evidencias",
+      "sections": [
+        {
+          "title": "Capturas",
+          "fields": [
+            { "name": "evidence_photos", "type": "text", "required": true },
+            { "name": "evidence_geo", "type": "text", "required": false },
+            { "name": "evidence_ids", "type": "text", "required": false }
+          ]
+        },
+        {
+          "title": "Notas",
+          "fields": [
+            { "name": "evidence_notes", "type": "textarea", "required": false }
+          ]
+        }
+      ]
+    },
+    "10": {
+      "title": "Incidentes y observaciones",
+      "sections": [
+        {
+          "title": "Clasificacion",
+          "fields": [
+            { "name": "incidents", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "incidents_severity", "type": "select", "required": false, "options": ["low", "medium", "high"], "show_if": { "incidents": "true" } },
+            { "name": "incidents_count", "type": "number", "required": false, "min": 0, "show_if": { "incidents": "true" } }
+          ]
+        },
+        {
+          "title": "Detalle y mitigacion",
+          "show_if": { "incidents": "true" },
+          "fields": [
+            { "name": "incidents_detail", "type": "text", "required": true, "required_if": { "incidents": "true" } },
+            {
+              "name": "mitigation_plan",
+              "type": "text",
+              "required": true,
+              "required_if_all": [
+                { "field": "incidents", "value": "true" },
+                { "field": "incidents_severity", "value": "high" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "11": {
+      "title": "Firmas y aprobaciones",
+      "sections": [
+        {
+          "title": "Firmas",
+          "fields": [
+            { "name": "signature_tech", "type": "text", "required": true },
+            { "name": "signature_supervisor_required", "type": "select", "required": false, "options": ["true", "false"] },
+            { "name": "signature_supervisor", "type": "text", "required": true, "required_if": { "signature_supervisor_required": "true" } },
+            { "name": "signature_client", "type": "text", "required": false }
+          ]
+        },
+        {
+          "title": "Metodo y fecha",
+          "fields": [
+            { "name": "signature_method", "type": "select", "required": false, "options": ["canvas", "webauthn"] },
+            { "name": "signature_date", "type": "date", "required": false }
+          ]
+        }
+      ]
+    },
+    "12": {
+      "title": "Resumen y cierre",
+      "sections": [
+        {
+          "title": "Resumen",
+          "fields": [
+            { "name": "report_summary", "type": "textarea", "required": false },
+            { "name": "next_actions", "type": "textarea", "required": false }
+          ]
+        },
+        {
+          "title": "Cierre",
+          "fields": [
+            { "name": "final_review_ack", "type": "select", "required": true, "options": ["true", "false"] },
+            { "name": "client_feedback", "type": "text", "required": false }
+          ]
+        }
+      ]
+    }
+  }
+}
