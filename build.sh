@@ -4,6 +4,7 @@
 
 set -o errexit  # Exit on error
 set -o pipefail # Exit on pipe failure
+set -o xtrace   # Print commands for debug
 
 echo "=========================================="
 echo "Building SITEC application for Render..."
