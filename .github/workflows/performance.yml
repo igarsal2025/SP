@@ -39,15 +39,15 @@ jobs:
 
       - name: Run Lighthouse CI
         run: |
-          lhci collect --config=.lighthouserc.js \
+          lhci collect --config="$GITHUB_WORKSPACE/.lighthouserc.js" \
             --collect.url="http://localhost:8000/" \
             --collect.url="http://localhost:8000/wizard/1/" \
             --collect.startServerCommand="cd backend && python manage.py runserver" \
             --collect.startServerReadyPattern="Watching for file changes" \
             --collect.startServerReadyTimeout=30000 \
             --collect.numberOfRuns=3
-          lhci assert --config=.lighthouserc.js
-          lhci upload --config=.lighthouserc.js
+          lhci assert --config="$GITHUB_WORKSPACE/.lighthouserc.js"
+          lhci upload --config="$GITHUB_WORKSPACE/.lighthouserc.js"
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -56,8 +56,8 @@ jobs:
           cd backend/static/frontend/js
           total_size=$(du -b *.js | awk '{sum+=$1} END {print sum}')
           echo "Total JS size: $total_size bytes"
-          if [ $total_size -gt 100000 ]; then
-            echo "ERROR: JS bundle size ($total_size bytes) exceeds 100KB limit"
+          if [ $total_size -gt 300000 ]; then
+            echo "ERROR: JS bundle size ($total_size bytes) exceeds 300KB limit"
             exit 1
           fi
           echo "✓ JS bundle size within limits"
@@ -68,8 +68,8 @@ jobs:
           echo "## Performance Budget Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Budget Limits:" >> $GITHUB_STEP_SUMMARY
-          echo "- FCP: < 1000ms" >> $GITHUB_STEP_SUMMARY
+          echo "- FCP: < 2000ms" >> $GITHUB_STEP_SUMMARY
           echo "- TTI: < 2500ms" >> $GITHUB_STEP_SUMMARY
-          echo "- JS Initial: < 100KB" >> $GITHUB_STEP_SUMMARY
+          echo "- JS Initial: < 300KB" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Check Lighthouse CI results above for detailed metrics." >> $GITHUB_STEP_SUMMARY

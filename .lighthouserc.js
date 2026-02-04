@@ -4,7 +4,7 @@ module.exports = {
     collect: {
       url: ["http://localhost:8000/", "http://localhost:8000/wizard/1/"],
       startServerCommand: "cd backend && python manage.py runserver",
-      startServerReadyPattern: "Starting development server",
+      startServerReadyPattern: "Watching for file changes",
       startServerReadyTimeout: 30000,
       numberOfRuns: 3,
     },
