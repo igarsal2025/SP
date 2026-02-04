@@ -13,15 +13,15 @@
 - [x] `start.sh` creado y probado
 - [x] `render.yaml` creado (opcional)
 - [x] `settings.py` actualizado para PostgreSQL y WhiteNoise
-- [ ] Código en repositorio Git
-- [ ] Branch `main` o `master` estable
-- [ ] Tests pasando localmente
+- [x] Código en repositorio Git (igarsal2025/SP)
+- [x] Branch `main` estable y actualizada
+- [ ] Tests pasando localmente (verificar antes del deploy)
 
 ### Configuración
-- [ ] `.env` no está en `.gitignore` (verificar)
-- [ ] `SECRET_KEY` no está hardcodeado
-- [ ] `DEBUG=False` en producción
-- [ ] `ALLOWED_HOSTS` configurado
+- [x] `.env` está en `.gitignore` (no se suben secretos)
+- [x] `SECRET_KEY` no está hardcodeado (usa variable de entorno; Render genera)
+- [x] `DEBUG=False` en producción (definido en render.yaml)
+- [x] `ALLOWED_HOSTS` configurado (sitec-web.onrender.com en render.yaml)
 
 ---
 
@@ -105,8 +105,10 @@
 
 ---
 
-**Estado**: ⏳ **PENDIENTE DE IMPLEMENTACIÓN**
+**Estado**: ✅ **Pre-deploy listo** (código, repo, config). Pendiente: tests locales y pasos en Render Dashboard.
+
+Ver también: `docs/REVISION_PENDIENTES_ANTES_RENDER.md` para revisión antes de publicar.
 
 ---
 
-**Última actualización**: 2026-01-23
+**Última actualización**: 2026-01-26
